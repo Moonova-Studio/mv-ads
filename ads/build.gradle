@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    namespace 'com.ads.control'
+    namespace 'com.example.control'
     compileSdk 36
 
     defaultConfig {
         minSdk 28
         targetSdk 36
-        versionCode 9
-        versionName "1.1.3"
+        versionCode 1
+        versionName "1.0.1"
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner" // nếu cần test
     }
 
@@ -105,8 +105,8 @@ publishing {
                 from(components["release"])
             }
             groupId = "com.github.Moonova-Studio"
-            artifactId = "WD-Studio"
-            version = "1.0.2"
+            artifactId = "Moonova-Studio"
+            version = "1.0.0"
         }
     }
 }
