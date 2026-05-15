@@ -35,7 +35,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ads.control.R;
 import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
 import com.ads.control.ads.nativeAds.MKAdPlacer;
 import com.ads.control.ads.nativeAds.MKAdPlacerSettings;
@@ -50,6 +49,7 @@ import com.ads.control.util.AppUtil;
 import com.ads.control.util.SharePreferenceUtils;
 import com.applovin.mediation.AppLovinExtras;
 import com.applovin.mediation.ApplovinAdapter;
+import com.example.control.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdError;

@@ -22,8 +22,6 @@ import android.view.Gravity;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.appcompat.widget.AppCompatRatingBar;
 
-import com.ads.control.R;
-
 public class CustomRatingBar extends AppCompatRatingBar {
 
     private Bitmap sampleTile;

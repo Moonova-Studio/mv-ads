@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ads.control.admob.Admob;
-import com.example.andmoduleads.R;
+import com.example.module.R;
 
 /**
  * A simple {@link Fragment} subclass.

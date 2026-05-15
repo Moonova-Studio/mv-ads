@@ -7,10 +7,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.ads.control.R;
 import com.ads.control.funtion.BillingListener;
 import com.ads.control.funtion.PurchaseListener;
 import com.android.billingclient.api.ProductDetails;
+import com.example.control.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class PurchaseDevBottomSheet extends BottomSheetDialog {

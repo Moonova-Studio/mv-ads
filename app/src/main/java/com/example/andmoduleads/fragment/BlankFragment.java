@@ -16,8 +16,8 @@ import com.ads.control.admob.Admob;
 import com.ads.control.ads.MKGAd;
 import com.ads.control.config.MKAdConfig;
 import com.ads.control.funtion.AdCallback;
-import com.example.andmoduleads.R;
 import com.example.andmoduleads.activity.ContentActivity;
+import com.example.module.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 
@@ -71,8 +71,8 @@ public class BlankFragment extends Fragment {
             });
         });
 
-        FrameLayout flPlaceHolder = view.findViewById(com.ads.control.R.id.fl_adplaceholder);
-        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(com.ads.control.R.id.shimmer_container_native);
-        MKGAd.getInstance().loadNativeAd(requireActivity(), getString(R.string.admod_native_id), com.ads.control.R.layout.custom_native_admob_free_size, flPlaceHolder, shimmerFrameLayout, null);
+        FrameLayout flPlaceHolder = view.findViewById(com.example.control.R.id.fl_adplaceholder);
+        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(com.example.control.R.id.shimmer_container_native);
+        MKGAd.getInstance().loadNativeAd(requireActivity(), getString(R.string.admod_native_id), com.example.control.R.layout.custom_native_admob_free_size, flPlaceHolder, shimmerFrameLayout, null);
     }
 }

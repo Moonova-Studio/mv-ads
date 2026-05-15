@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.andmoduleads">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".MyApplication"
+        android:name="com.example.andmoduleads.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,13 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndModuleAds">
         <activity
-            android:name=".activity.SimpleListActivity"
+            android:name="com.example.andmoduleads.activity.SimpleListActivity"
             android:exported="true">
 
         </activity>
-        <activity android:name=".activity.ContentActivity" />
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.TestSplash"
+        <activity android:name="com.example.andmoduleads.activity.ContentActivity" />
+        <activity android:name="com.example.andmoduleads.activity.MainActivity" />
+        <activity android:name="com.example.andmoduleads.activity.TestSplash"
             android:exported="true">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +29,7 @@
             </intent-filter>-->
         </activity>
 
-        <activity android:name=".activity.SplashActivity"
+        <activity android:name="com.example.andmoduleads.activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

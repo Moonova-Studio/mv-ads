@@ -10,8 +10,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.ads.control.R;
 import com.ads.control.widget.spinkit.sprite.Sprite;
+import com.example.control.R;
 
 /**
  * Created by ybq.

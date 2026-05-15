@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.R;
+import com.example.control.R;
 
 
 public class InAppDialog extends Dialog {

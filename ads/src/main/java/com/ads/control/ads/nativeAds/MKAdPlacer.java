@@ -10,12 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ads.control.R;
 import com.ads.control.admob.Admob;
 import com.ads.control.ads.wrapper.ApAdValue;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.ads.wrapper.StatusAd;
 import com.ads.control.funtion.AdCallback;
+import com.example.control.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdValue;
 import com.google.android.gms.ads.LoadAdError;

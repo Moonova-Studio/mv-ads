@@ -22,7 +22,6 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.config.MKAdConfig;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
@@ -30,6 +29,7 @@ import com.ads.control.dialog.ResumeLoadingDialog;
 import com.ads.control.event.MKLogEventManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdType;
+import com.example.control.R;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;

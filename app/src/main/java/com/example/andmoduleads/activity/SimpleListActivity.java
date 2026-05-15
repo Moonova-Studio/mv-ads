@@ -13,8 +13,8 @@ import com.ads.control.config.MKAdConfig;
 import com.ads.control.ads.nativeAds.MKAdPlacer;
 import com.ads.control.ads.nativeAds.MKAdAdapter;
 import com.ads.control.ads.wrapper.ApAdValue;
-import com.example.andmoduleads.R;
 import com.example.andmoduleads.adapter.ListSimpleAdapter;
+import com.example.module.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 public class SimpleListActivity extends AppCompatActivity {
     private static final String TAG = "SimpleListActivity";
     MKAdAdapter adAdapter;
-    int layoutCustomNative = com.ads.control.R.layout.custom_native_admod_medium;
+    int layoutCustomNative = com.example.control.R.layout.custom_native_admod_medium;
     String idNative = "";
     SwipeRefreshLayout swRefresh;
     ListSimpleAdapter originalAdapter;
@@ -77,10 +77,10 @@ public class SimpleListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         if (MKGAd.getInstance().getMediationProvider() == MKAdConfig.PROVIDER_ADMOB) {
-            layoutCustomNative = com.ads.control.R.layout.custom_native_admod_medium;
+            layoutCustomNative = com.example.control.R.layout.custom_native_admod_medium;
             idNative = getString(R.string.admod_native_id);
         } else {
-            layoutCustomNative = com.ads.control.R.layout.custom_native_max_small;
+            layoutCustomNative = com.example.control.R.layout.custom_native_max_small;
             idNative = getString(R.string.applovin_test_native);
         }
 
@@ -93,7 +93,7 @@ public class SimpleListActivity extends AppCompatActivity {
     }
 
     private void setupAdAdapter() {
-        adAdapter = MKGAd.getInstance().getNativeRepeatAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
+        adAdapter = MKGAd.getInstance().getNativeRepeatAdapter(this, idNative, layoutCustomNative, com.example.control.R.layout.layout_native_medium,
                 originalAdapter, listener, 5);
 
         recyclerView.setAdapter(adAdapter.getAdapter());

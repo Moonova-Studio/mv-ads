@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ads.control.ads.MKGAd;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.util.AppConstant;
-import com.example.andmoduleads.R;
+import com.example.module.R;
 
 public class TestSplash extends AppCompatActivity {
     @Override

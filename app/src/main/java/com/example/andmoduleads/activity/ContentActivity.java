@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-import com.example.andmoduleads.R;
 import com.example.andmoduleads.fragment.BlankFragment;
+import com.example.module.R;
 
 import java.util.List;
 

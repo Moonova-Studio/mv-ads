@@ -11,6 +11,7 @@ import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.example.andmoduleads.activity.MainActivity;
 import com.example.andmoduleads.activity.SplashActivity;
+import com.example.module.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.List;

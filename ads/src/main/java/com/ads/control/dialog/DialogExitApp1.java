@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.ads.control.admob.Admob;
 import com.ads.control.funtion.DialogExitListener;
-import com.ads.control.R;
+import com.example.control.R;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 

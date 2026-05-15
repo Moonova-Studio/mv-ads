@@ -10,8 +10,8 @@ import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.MKGAd;
 import com.ads.control.config.MKAdConfig;
 import com.ads.control.funtion.AdCallback;
-import com.example.andmoduleads.BuildConfig;
-import com.example.andmoduleads.R;
+import com.example.module.BuildConfig;
+import com.example.module.R;
 
 import java.util.ArrayList;
 import java.util.List;

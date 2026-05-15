@@ -29,8 +29,8 @@ import com.ads.control.event.MKAdjust;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
-import com.example.andmoduleads.BuildConfig;
-import com.example.andmoduleads.R;
+import com.example.module.BuildConfig;
+import com.example.module.R;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 
@@ -206,12 +206,12 @@ public class MainActivity extends AppCompatActivity {
             idBanner = BuildConfig.ad_banner;
             idNative = BuildConfig.ad_native;
             idInter = BuildConfig.ad_interstitial_splash;
-            layoutNativeCustom = com.ads.control.R.layout.custom_native_admod_medium_rate;
+            layoutNativeCustom = com.example.control.R.layout.custom_native_admod_medium_rate;
         } else {
             idBanner = getString(R.string.applovin_test_banner);
             idNative = getString(R.string.applovin_test_native);
             idInter = getString(R.string.applovin_test_inter);
-            layoutNativeCustom = com.ads.control.R.layout.custom_native_max_medium;
+            layoutNativeCustom = com.example.control.R.layout.custom_native_max_medium;
         }
     }
 

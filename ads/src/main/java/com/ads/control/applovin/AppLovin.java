@@ -15,7 +15,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
@@ -39,6 +38,7 @@ import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer;
 import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacerSettings;
 import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter;
 import com.applovin.sdk.AppLovinSdk;
+import com.example.control.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.applovin.sdk.AppLovinSdkInitializationConfiguration;
 import com.applovin.sdk.AppLovinMediationProvider;
@@ -997,13 +997,13 @@ public class AppLovin {
         adAdapter.getAdPlacer().setAdSize(-1, -1);
 
         MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
-                .setTitleTextViewId(com.ads.control.R.id.ad_headline)
-                .setBodyTextViewId(com.ads.control.R.id.ad_body)
-                .setAdvertiserTextViewId(com.ads.control.R.id.ad_advertiser)
-                .setIconImageViewId(com.ads.control.R.id.ad_app_icon)
-                .setMediaContentViewGroupId(com.ads.control.R.id.ad_media)
-                .setOptionsContentViewGroupId(com.ads.control.R.id.ad_options_view)
-                .setCallToActionButtonId(com.ads.control.R.id.ad_call_to_action)
+                .setTitleTextViewId(R.id.ad_headline)
+                .setBodyTextViewId(R.id.ad_body)
+                .setAdvertiserTextViewId(R.id.ad_advertiser)
+                .setIconImageViewId(R.id.ad_app_icon)
+                .setMediaContentViewGroupId(R.id.ad_media)
+                .setOptionsContentViewGroupId(R.id.ad_options_view)
+                .setCallToActionButtonId(R.id.ad_call_to_action)
                 .build();
 
         adAdapter.getAdPlacer().setNativeAdViewBinder(binder);
@@ -1022,13 +1022,13 @@ public class AppLovin {
         adAdapter.getAdPlacer().setAdSize(-1, -1);
 
         MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
-                .setTitleTextViewId(com.ads.control.R.id.ad_headline)
-                .setBodyTextViewId(com.ads.control.R.id.ad_body)
-                .setAdvertiserTextViewId(com.ads.control.R.id.ad_advertiser)
-                .setIconImageViewId(com.ads.control.R.id.ad_app_icon)
-                .setMediaContentViewGroupId(com.ads.control.R.id.ad_media)
-                .setOptionsContentViewGroupId(com.ads.control.R.id.ad_options_view)
-                .setCallToActionButtonId(com.ads.control.R.id.ad_call_to_action)
+                .setTitleTextViewId(R.id.ad_headline)
+                .setBodyTextViewId(R.id.ad_body)
+                .setAdvertiserTextViewId(R.id.ad_advertiser)
+                .setIconImageViewId(R.id.ad_app_icon)
+                .setMediaContentViewGroupId(R.id.ad_media)
+                .setOptionsContentViewGroupId(R.id.ad_options_view)
+                .setCallToActionButtonId(R.id.ad_call_to_action)
                 .build();
 
         adAdapter.getAdPlacer().setNativeAdViewBinder(binder);

@@ -8,10 +8,10 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.ads.control.R;
 import com.ads.control.ads.MKGAd;
 import com.ads.control.ads.MKAdCallback;
 import com.ads.control.funtion.AdCallback;
+import com.example.control.R;
 
 public class MKBannerAdView extends RelativeLayout {
 
