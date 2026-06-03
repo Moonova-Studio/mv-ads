@@ -1575,6 +1575,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 return;
             }
         }
+            
+        if (!NavigationTracker.canShowAppOpen()) {
+            Log.d(TAG, "onStart: activity is disabled Skip app open ad. Route = "
+                    + NavigationTracker.getCurrentRoute());
+            return;
+        }
 
         if (splashActivity != null && splashActivity.getName().equals(currentActivity.getClass().getName())) {
             String adId = splashAdId;
