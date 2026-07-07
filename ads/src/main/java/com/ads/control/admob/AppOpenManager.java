@@ -97,6 +97,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private InterstitialAd splashAdInter = null;
     private InterstitialAd splashAdHighInter = null;
 
+    private boolean isSplashInterShowed = false;
+
     private int statusHigh = -1;
     private int statusMedium = -1;
     private int statusAll = -1;
@@ -1182,7 +1184,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     public void loadSplashInters(AppCompatActivity activity, String idInterHigh, String idInterNormal, int timeOutInter, AdCallback adListener) {
-        isAppOpenShowed = false;
+        isSplashInterShowed = false;
         isTimeDelay = false;
         statusInterHigh = Type_Loading;
         statusInterNormal = Type_Loading;
@@ -1197,9 +1199,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (adListener != null && !isAppOpenShowed && splashAdHighInter == null && splashAdInter == null) {
-                    isAppOpenShowed = true;
-                    adListener.onNextAction();
+                if (adListener != null && !isSplashInterShowed) {
+                    if (statusInterHigh == Type_Load_Fail && statusInterNormal == Type_Load_Fail) {
+                        isSplashInterShowed = true;
+                        adListener.onNextAction();
+                    }
                 }
             }
         }, timeOutInter);
@@ -1226,6 +1230,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         });
 
                         splashAdHighInter = interstitialAd;
+
+                        if (!isSplashInterShowed) {
+                            isSplashInterShowed = true;
+                            Admob.getInstance().onShowSplash(activity, adListener, splashAdHighInter, MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                        }
                     }
 
                     @Override
@@ -1234,9 +1243,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         statusInterHigh = Type_Load_Fail;
                         splashAdHighInter = null;
 
-                        if (statusInterNormal == Type_Load_Fail) {
-                            if (adListener != null && !isAppOpenShowed) {
-                                isAppOpenShowed = true;
+                        if (statusInterNormal == Type_Load_Success && !isSplashInterShowed) {
+                            isSplashInterShowed = true;
+                            Admob.getInstance().onShowSplash(activity, adListener, splashAdInter, MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                        } else if (statusInterNormal == Type_Load_Fail && !isSplashInterShowed) {
+                            isSplashInterShowed = true;
+                            if (adListener != null) {
                                 adListener.onNextAction();
                             }
                         }
@@ -1266,6 +1278,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         });
 
                         splashAdInter = interstitialAd;
+
+                        if (statusInterHigh == Type_Load_Fail && !isSplashInterShowed) {
+                            isSplashInterShowed = true;
+                            Admob.getInstance().onShowSplash(activity, adListener, splashAdInter, MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                        }
                     }
 
                     @Override
@@ -1274,9 +1291,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         statusInterNormal = Type_Load_Fail;
                         splashAdInter = null;
 
-                        if (statusInterHigh == Type_Load_Fail) {
-                            if (adListener != null && !isAppOpenShowed) {
-                                isAppOpenShowed = true;
+                        if (statusInterHigh == Type_Load_Fail && !isSplashInterShowed) {
+                            isSplashInterShowed = true;
+                            if (adListener != null) {
                                 adListener.onNextAction();
                             }
                         }
