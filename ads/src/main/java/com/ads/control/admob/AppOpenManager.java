@@ -95,6 +95,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     private AppOpenAd splashAdOpen = null;
     private InterstitialAd splashAdInter = null;
+    private InterstitialAd splashAdHighInter = null;
 
     private int statusHigh = -1;
     private int statusMedium = -1;
@@ -102,6 +103,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     private int statusOpen = -1;
     private int statusInter = -1;
+    private int statusInterHigh = -1;
+    private int statusInterNormal = -1;
 
     private int Type_Loading = 0;
     private int Type_Load_Success = 1;
@@ -1175,6 +1178,112 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 });
 
         AppOpenAd.load(myApplication, idOpen, getAdRequest(), loadCallbackOpen);
+        currentTime = System.currentTimeMillis();
+    }
+
+    public void loadSplashInters(AppCompatActivity activity, String idInterHigh, String idInterNormal, int timeOutInter, AdCallback adListener) {
+        isAppOpenShowed = false;
+        isTimeDelay = false;
+        statusInterHigh = Type_Loading;
+        statusInterNormal = Type_Loading;
+
+        if (AppPurchase.getInstance().isPurchased(activity)) {
+            if (adListener != null) {
+                adListener.onNextAction();
+            }
+            return;
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (adListener != null && !isAppOpenShowed && splashAdHighInter == null && splashAdInter == null) {
+                    isAppOpenShowed = true;
+                    adListener.onNextAction();
+                }
+            }
+        }, timeOutInter);
+
+        // Load High Floor Interstitial Ad
+        InterstitialAd.load(activity, idInterHigh, getAdRequest(),
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        if (adListener != null)
+                            adListener.onAdLoadedHigh();
+
+                        statusInterHigh = Type_Load_Success;
+
+                        // Log paid Ads Interstitial High Floor
+                        interstitialAd.setOnPaidEventListener(adValue -> {
+                            MKLogEventManager.logPaidAdImpression(activity,
+                                    adValue,
+                                    interstitialAd.getAdUnitId(),
+                                    interstitialAd.getResponseInfo()
+                                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+
+                            MKLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                        });
+
+                        splashAdHighInter = interstitialAd;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.i(TAG, loadAdError.getMessage());
+                        statusInterHigh = Type_Load_Fail;
+                        splashAdHighInter = null;
+
+                        if (statusInterNormal == Type_Load_Fail) {
+                            if (adListener != null && !isAppOpenShowed) {
+                                isAppOpenShowed = true;
+                                adListener.onNextAction();
+                            }
+                        }
+                    }
+
+                });
+
+        // Load Normal Interstitial Ad
+        InterstitialAd.load(activity, idInterNormal, getAdRequest(),
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        if (adListener != null)
+                            adListener.onInterstitialLoad(interstitialAd);
+
+                        statusInterNormal = Type_Load_Success;
+
+                        // Log paid Ads Interstitial Normal
+                        interstitialAd.setOnPaidEventListener(adValue -> {
+                            MKLogEventManager.logPaidAdImpression(activity,
+                                    adValue,
+                                    interstitialAd.getAdUnitId(),
+                                    interstitialAd.getResponseInfo()
+                                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+
+                            MKLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                        });
+
+                        splashAdInter = interstitialAd;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.i(TAG, loadAdError.getMessage());
+                        statusInterNormal = Type_Load_Fail;
+                        splashAdInter = null;
+
+                        if (statusInterHigh == Type_Load_Fail) {
+                            if (adListener != null && !isAppOpenShowed) {
+                                isAppOpenShowed = true;
+                                adListener.onNextAction();
+                            }
+                        }
+                    }
+
+                });
+
         currentTime = System.currentTimeMillis();
     }
 
