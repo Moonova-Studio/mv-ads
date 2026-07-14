@@ -150,8 +150,14 @@ public class AppPurchase {
         handlerTimeout = new Handler();
         rdTimeout = () -> {
             Log.d(TAG, "setBillingListener: timeout run ");
+            if (isInitBillingFinish) {
+                // Billing setup already completed and notified the listener; avoid a duplicate callback.
+                return;
+            }
             isInitBillingFinish = true;
-            billingListener.onInitBillingFinished(BillingClient.BillingResponseCode.ERROR);
+            if (billingListener != null) {
+                billingListener.onInitBillingFinished(BillingClient.BillingResponseCode.ERROR);
+            }
         };
         handlerTimeout.postDelayed(rdTimeout, timeout);
     }
@@ -368,9 +374,11 @@ public class AppPurchase {
                                 isVerifyINAP = true;
                                 if (isVerifySUBS) {
                                     // chưa mua subs và IAP
-                                    billingListener.onInitBillingFinished(billingResult.getResponseCode());
-                                    if (handlerTimeout != null && rdTimeout != null) {
-                                        handlerTimeout.removeCallbacks(rdTimeout);
+                                    if (billingListener != null && isCallback) {
+                                        billingListener.onInitBillingFinished(billingResult.getResponseCode());
+                                        if (handlerTimeout != null && rdTimeout != null) {
+                                            handlerTimeout.removeCallbacks(rdTimeout);
+                                        }
                                     }
                                     verifyFinish = true;
                                 }
@@ -543,6 +551,9 @@ public class AppPurchase {
             return "";
         }
         ProductDetails productDetails = skuDetailsINAPMap.get(productId);
+        if (productDetails == null) {
+            return "Product ID invalid";
+        }
         Log.d(TAG, "purchase: "+ productDetails.toString());
         //ProductDetails{jsonString='{"productId":"android.test.purchased","type":"inapp","title":"Tiêu đề mẫu","description":"Mô tả mẫu về sản phẩm: android.test.purchased.","skuDetailsToken":"AEuhp4Izz50wTvd7YM9wWjPLp8hZY7jRPhBEcM9GAbTYSdUM_v2QX85e8UYklstgqaRC","oneTimePurchaseOfferDetails":{"priceAmountMicros":23207002450,"priceCurrencyCode":"VND","formattedPrice":"23.207 ₫"}}', parsedJson={"productId":"android.test.purchased","type":"inapp","title":"Tiêu đề mẫu","description":"Mô tả mẫu về sản phẩm: android.test.purchased.","skuDetailsToken":"AEuhp4Izz50wTvd7YM9wWjPLp8hZY7jRPhBEcM9GAbTYSdUM_v2QX85e8UYklstgqaRC","oneTimePurchaseOfferDetails":{"priceAmountMicros":23207002450,"priceCurrencyCode":"VND","formattedPrice":"23.207 ₫"}}, productId='android.test.purchased', productType='inapp', title='Tiêu đề mẫu', productDetailsToken='AEuhp4Izz50wTvd7YM9wWjPLp8hZY7jRPhBEcM9GAbTYSdUM_v2QX85e8UYklstgqaRC', subscriptionOfferDetails=null}
         if (AppUtil.VARIANT_DEV) {
@@ -551,12 +562,6 @@ public class AppPurchase {
             PurchaseDevBottomSheet purchaseDevBottomSheet = new PurchaseDevBottomSheet(TYPE_IAP.PURCHASE,productDetails,activity,purchaseListener);
             purchaseDevBottomSheet.show();
             return "";
-        }
-
-
-
-        if (productDetails == null) {
-            return "Product ID invalid";
         }
 
         idPurchaseCurrent = productId;
@@ -642,8 +647,10 @@ public class AppPurchase {
         if (productDetails == null) {
             return "Product ID invalid";
         }
-        ProductDetails skuDetails = skuDetailsSubsMap.get(SubsId);
-        List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+        List<ProductDetails.SubscriptionOfferDetails> subsDetail = productDetails.getSubscriptionOfferDetails();
+        if (subsDetail == null || subsDetail.isEmpty()) {
+            return "Product ID invalid";
+        }
         String offerToken = subsDetail.get(subsDetail.size() - 1).getOfferToken();
         ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
                 ImmutableList.of(
@@ -776,8 +783,8 @@ public class AppPurchase {
         String currency = getCurrency(idPurchaseCurrent, typeIap);
         MKLogEventManager.onTrackRevenuePurchase((float) price, currency, idPurchaseCurrent, typeIap);
 
+        isPurchase = true;
         if (purchaseListener != null) {
-            isPurchase = true;
             purchaseListener.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
         }
         if (isConsumePurchase) {
@@ -822,7 +829,7 @@ public class AppPurchase {
     public String getPrice(String productId) {
 
         ProductDetails skuDetails = skuDetailsINAPMap.get(productId);
-        if (skuDetails == null)
+        if (skuDetails == null || skuDetails.getOneTimePurchaseOfferDetails() == null)
             return "";
 
         Log.e(TAG, "getPrice: " + skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice());
@@ -835,9 +842,12 @@ public class AppPurchase {
         if (skuDetails == null)
             return "";
 
-
         List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+        if (subsDetail == null || subsDetail.isEmpty())
+            return "";
         List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+        if (pricingPhaseList == null || pricingPhaseList.isEmpty())
+            return "";
         Log.e(TAG, "getPriceSub: " + pricingPhaseList.get(pricingPhaseList.size() - 1).getFormattedPrice());
         return pricingPhaseList.get(pricingPhaseList.size() - 1).getFormattedPrice();
     }
@@ -854,6 +864,8 @@ public class AppPurchase {
             return null;
 
         List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+        if (subsDetail == null || subsDetail.isEmpty())
+            return null;
         List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
         return pricingPhaseList;
     }
@@ -874,7 +886,11 @@ public class AppPurchase {
             return skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
         else if (skuDetails.getSubscriptionOfferDetails() != null) {
             List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+            if (subsDetail.isEmpty())
+                return "";
             List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+            if (pricingPhaseList == null || pricingPhaseList.isEmpty())
+                return "";
             return pricingPhaseList.get(pricingPhaseList.size() - 1).getFormattedPrice();
         } else {
             return "";
@@ -894,11 +910,17 @@ public class AppPurchase {
         if (skuDetails == null) {
             return "";
         }
-        if (typeIAP == TYPE_IAP.PURCHASE)
+        if (typeIAP == TYPE_IAP.PURCHASE) {
+            if (skuDetails.getOneTimePurchaseOfferDetails() == null)
+                return "";
             return skuDetails.getOneTimePurchaseOfferDetails().getPriceCurrencyCode();
-        else {
+        } else {
             List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+            if (subsDetail == null || subsDetail.isEmpty())
+                return "";
             List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+            if (pricingPhaseList == null || pricingPhaseList.isEmpty())
+                return "";
             return pricingPhaseList.get(pricingPhaseList.size() - 1).getPriceCurrencyCode();
         }
     }
@@ -916,11 +938,17 @@ public class AppPurchase {
         if (skuDetails == null) {
             return 0;
         }
-        if (typeIAP == TYPE_IAP.PURCHASE)
+        if (typeIAP == TYPE_IAP.PURCHASE) {
+            if (skuDetails.getOneTimePurchaseOfferDetails() == null)
+                return 0;
             return skuDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros();
-        else {
+        } else {
             List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+            if (subsDetail == null || subsDetail.isEmpty())
+                return 0;
             List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+            if (pricingPhaseList == null || pricingPhaseList.isEmpty())
+                return 0;
             return pricingPhaseList.get(pricingPhaseList.size() - 1).getPriceAmountMicros();
         }
     }

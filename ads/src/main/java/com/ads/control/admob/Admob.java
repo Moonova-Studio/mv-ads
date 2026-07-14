@@ -117,9 +117,6 @@ public class Admob {
     InterstitialAd mInterSplashHighFloor;
     InterstitialAd mInterSplashAll;
 
-    public Thread threadHighFloor;
-    public Thread threadAll;
-
     public void setFan(boolean fan) {
         isFan = fan;
     }
@@ -1241,9 +1238,7 @@ public class Admob {
                     }
                     callback.onAdClosed();
                 }
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+                dismissAdDialog();
                 Log.e(TAG, "onAdDismissedFullScreenContent");
             }
 
@@ -1258,9 +1253,7 @@ public class Admob {
                         callback.onNextAction();
                     }
 
-                    if (dialog != null) {
-                        dialog.dismiss();
-                    }
+                    dismissAdDialog();
                 }
             }
 
@@ -1317,10 +1310,19 @@ public class Admob {
     private void showInterstitialAd(Context context, InterstitialAd mInterstitialAd, AdCallback callback) {
         currentClicked++;
         if (currentClicked >= numShowAds && mInterstitialAd != null) {
+            // An interstitial can only be shown from an Activity context.
+            if (!(context instanceof Activity)) {
+                Log.e(TAG, "showInterstitialAd: context is not an Activity, skip showing ad");
+                currentClicked = 0;
+                if (callback != null) {
+                    callback.onNextAction();
+                }
+                return;
+            }
+            final Activity activity = (Activity) context;
             if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                 try {
-                    if (dialog != null && dialog.isShowing())
-                        dialog.dismiss();
+                    dismissAdDialog();
                     dialog = new PrepareLoadingAdsDialog(context);
                     dialog.setCancelable(false);
                     try {
@@ -1328,6 +1330,7 @@ public class Admob {
                         dialog.show();
                         AppOpenManager.getInstance().setInterstitialShowing(true);
                     } catch (Exception e) {
+                        currentClicked = 0;
                         callback.onNextAction();
                         return;
                     }
@@ -1336,30 +1339,49 @@ public class Admob {
                     e.printStackTrace();
                 }
                 new Handler().postDelayed(() -> {
-                    if (((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                    if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                         if (openActivityAfterShowInterAds && callback != null) {
                             callback.onNextAction();
                             new Handler().postDelayed(() -> {
-                                if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
-                                    dialog.dismiss();
+                                if (!activity.isDestroyed())
+                                    dismissAdDialog();
                             }, 1500);
                         }
-                        Log.i(TAG, "start show InterstitialAd " + ((AppCompatActivity) context).getLifecycle().getCurrentState().name() + "/" + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
-                        mInterstitialAd.show((Activity) context);
+                        Log.i(TAG, "start show InterstitialAd " + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        mInterstitialAd.show(activity);
                     } else {
-                        if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
-                            dialog.dismiss();
+                        if (!activity.isDestroyed())
+                            dismissAdDialog();
                         Log.e(TAG, "showInterstitialAd:   show fail in background after show loading ad");
-                        callback.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "MKAd"));
+                        if (callback != null) {
+                            callback.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "MKAd"));
+                        }
                     }
                 }, 800);
+                currentClicked = 0;
+            } else {
+                // Not resumed: cannot show the loading dialog / ad. Do not swallow the flow.
+                currentClicked = 0;
+                if (callback != null) {
+                    callback.onNextAction();
+                }
             }
-            currentClicked = 0;
         } else if (callback != null) {
-            if (dialog != null) {
-                dialog.dismiss();
-            }
+            dismissAdDialog();
             callback.onNextAction();
+        }
+    }
+
+    /**
+     * Safely dismiss the loading dialog without crashing if the window is already gone.
+     */
+    private void dismissAdDialog() {
+        if (dialog != null && dialog.isShowing()) {
+            try {
+                dialog.dismiss();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -33,7 +33,7 @@ public class SharePreferenceUtils {
         return pre.getFloat(KEY_CURRENT_TOTAL_REVENUE_AD, 0);
     }
 
-    public static void updateCurrentTotalRevenueAd(Context context, float revenue) {
+    public static synchronized void updateCurrentTotalRevenueAd(Context context, float revenue) {
         SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         float currentTotalRevenue = pre.getFloat(KEY_CURRENT_TOTAL_REVENUE_AD, 0);
         currentTotalRevenue += revenue / 1000000.0;
