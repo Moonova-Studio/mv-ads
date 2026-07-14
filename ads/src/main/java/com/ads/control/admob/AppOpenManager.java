@@ -1177,6 +1177,127 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         currentTime = System.currentTimeMillis();
     }
 
+    /**
+     * Waterfall variant of {@link #loadSplashInters}.
+     * Loads the High Floor interstitial first; if it loads, it is shown immediately.
+     * Only if High Floor <b>fails to load</b> is the Normal interstitial loaded and then shown.
+     * A single {@code timeOutInter} deadline guards the whole chain so the flow never hangs.
+     */
+    public void loadSplashIntersWaterfall(AppCompatActivity activity, String idInterHigh, String idInterNormal, int timeOutInter, AdCallback adListener) {
+        isSplashInterShowed = false;
+        isTimeDelay = false;
+        statusInterHigh = Type_Loading;
+        statusInterNormal = Type_Loading;
+
+        if (AppPurchase.getInstance().isPurchased(activity)) {
+            if (adListener != null) {
+                adListener.onNextAction();
+            }
+            return;
+        }
+
+        // Safety deadline: if nothing has been shown by the timeout, continue the flow.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (adListener != null && !isSplashInterShowed) {
+                    isSplashInterShowed = true;
+                    adListener.onNextAction();
+                }
+            }
+        }, timeOutInter);
+
+        // Step 1: load the High Floor interstitial first.
+        InterstitialAd.load(activity, idInterHigh, getAdRequest(),
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        if (adListener != null)
+                            adListener.onAdLoadedHigh();
+
+                        statusInterHigh = Type_Load_Success;
+
+                        // Log paid Ads Interstitial High Floor
+                        interstitialAd.setOnPaidEventListener(adValue -> {
+                            MKLogEventManager.logPaidAdImpression(activity,
+                                    adValue,
+                                    interstitialAd.getAdUnitId(),
+                                    interstitialAd.getResponseInfo()
+                                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+
+                            MKLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                        });
+
+                        splashAdHighInter = interstitialAd;
+
+                        if (!isSplashInterShowed) {
+                            isSplashInterShowed = true;
+                            Admob.getInstance().onShowSplash(activity, adListener, splashAdHighInter, MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                        }
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.i(TAG, loadAdError.getMessage());
+                        statusInterHigh = Type_Load_Fail;
+                        splashAdHighInter = null;
+
+                        // Already shown or timed out: nothing more to do.
+                        if (isSplashInterShowed) {
+                            return;
+                        }
+
+                        // Step 2: High Floor failed to load -> now load the Normal interstitial.
+                        InterstitialAd.load(activity, idInterNormal, getAdRequest(),
+                                new InterstitialAdLoadCallback() {
+                                    @Override
+                                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                                        if (adListener != null)
+                                            adListener.onInterstitialLoad(interstitialAd);
+
+                                        statusInterNormal = Type_Load_Success;
+
+                                        // Log paid Ads Interstitial Normal
+                                        interstitialAd.setOnPaidEventListener(adValue -> {
+                                            MKLogEventManager.logPaidAdImpression(activity,
+                                                    adValue,
+                                                    interstitialAd.getAdUnitId(),
+                                                    interstitialAd.getResponseInfo()
+                                                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+
+                                            MKLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                                        });
+
+                                        splashAdInter = interstitialAd;
+
+                                        if (!isSplashInterShowed) {
+                                            isSplashInterShowed = true;
+                                            Admob.getInstance().onShowSplash(activity, adListener, splashAdInter, MKAdConfig.ADJUST_TOKEN_TIKTOK);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                                        Log.i(TAG, loadAdError.getMessage());
+                                        statusInterNormal = Type_Load_Fail;
+                                        splashAdInter = null;
+
+                                        if (!isSplashInterShowed) {
+                                            isSplashInterShowed = true;
+                                            if (adListener != null) {
+                                                adListener.onNextAction();
+                                            }
+                                        }
+                                    }
+
+                                });
+                    }
+
+                });
+
+        currentTime = System.currentTimeMillis();
+    }
+
     public void loadSplashInters(AppCompatActivity activity, String idInterHigh, String idInterNormal, int timeOutInter, AdCallback adListener) {
         isSplashInterShowed = false;
         isTimeDelay = false;
