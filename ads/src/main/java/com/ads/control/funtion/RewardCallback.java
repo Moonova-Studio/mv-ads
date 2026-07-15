@@ -7,4 +7,5 @@ public interface   RewardCallback {
     void onRewardedAdClosed(  );
     void onRewardedAdFailedToShow(int codeError  );
     void onAdClicked();
+    void onInterstitialShow();
 }
