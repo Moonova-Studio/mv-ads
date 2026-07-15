@@ -783,6 +783,9 @@ public class Admob {
                 Log.d(TAG, " Splash:onAdShowedFullScreenContent ");
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 isShowLoadingSplash = false;
+                if (adListener != null) {
+                    adListener.onInterstitialShow();
+                }
             }
 
             @Override
@@ -926,6 +929,9 @@ public class Admob {
                 Log.d(TAG, " Splash:onAdShowedFullScreenContent ");
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 isShowLoadingSplash = false;
+                if (adListener != null) {
+                    adListener.onInterstitialShow();
+                }
             }
 
             @Override
@@ -1264,6 +1270,9 @@ public class Admob {
                 SharePreferenceUtils.setLastImpressionInterstitialTime(context);
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 // Called when fullscreen content is shown.
+                if (callback != null) {
+                    callback.onInterstitialShow();
+                }
             }
 
             @Override
@@ -2504,6 +2513,9 @@ public class Admob {
 
                     AppOpenManager.getInstance().setInterstitialShowing(true);
                     rewardedAd = null;
+                    if (adCallback != null) {
+                        adCallback.onInterstitialShow();
+                    }
                 }
 
                 public void onAdClicked() {
@@ -2566,7 +2578,9 @@ public class Admob {
                     super.onAdShowedFullScreenContent();
 
                     AppOpenManager.getInstance().setInterstitialShowing(true);
-
+                    if (adCallback != null) {
+                        adCallback.onInterstitialShow();
+                    }
                 }
 
                 public void onAdClicked() {
@@ -2630,6 +2644,9 @@ public class Admob {
 
                     AppOpenManager.getInstance().setInterstitialShowing(true);
                     initRewardAds(context, nativeId, tokenAdjust);
+                    if (adCallback != null) {
+                        adCallback.onInterstitialShow();
+                    }
                 }
 
                 public void onAdClicked() {
