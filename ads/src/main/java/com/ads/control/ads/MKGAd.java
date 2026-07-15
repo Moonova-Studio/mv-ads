@@ -875,6 +875,7 @@ public class MKGAd {
                     @Override
                     public void onInterstitialShow() {
                         super.onInterstitialShow();
+                        mInterstitialAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
                         callback.onInterstitialShow();
                     }
                 };
@@ -915,6 +916,7 @@ public class MKGAd {
                     @Override
                     public void onInterstitialShow() {
                         super.onInterstitialShow();
+                        mInterstitialAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
                         callback.onInterstitialShow();
                     }
                 }, false);
@@ -1024,6 +1026,7 @@ public class MKGAd {
                     @Override
                     public void onInterstitialShow() {
                         super.onInterstitialShow();
+                        mInterstitialAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
                         if (callback != null) {
                             callback.onInterstitialShow();
                         }
@@ -1068,6 +1071,7 @@ public class MKGAd {
                     @Override
                     public void onInterstitialShow() {
                         super.onInterstitialShow();
+                        mInterstitialAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
                         if (callback != null) {
                             callback.onInterstitialShow();
                         }
@@ -1333,6 +1337,7 @@ public class MKGAd {
                 Admob.getInstance().populateUnifiedNativeAdView(apNativeAd.getAdmobNativeAd(), adView);
                 adPlaceHolder.removeAllViews();
                 adPlaceHolder.addView(adView);
+                apNativeAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
                 break;
             case MKAdConfig.PROVIDER_MAX:
                 containerShimmerLoading.stopShimmer();
@@ -1343,6 +1348,7 @@ public class MKGAd {
                     ((ViewGroup) apNativeAd.getNativeView().getParent()).removeAllViews();
                 }
                 adPlaceHolder.addView(apNativeAd.getNativeView());
+                apNativeAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
         }
     }
 
@@ -1498,6 +1504,7 @@ public class MKGAd {
 
                         @Override
                         public void onInterstitialShow() {
+                            apRewardAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
                             callback.onInterstitialShow();
                         }
                     }, adConfig.getAdjustTokenTiktok());
@@ -1530,6 +1537,7 @@ public class MKGAd {
 
                         @Override
                         public void onInterstitialShow() {
+                            apRewardAd.setStatus(StatusAd.AD_RENDER_SUCCESS);
                             callback.onInterstitialShow();
                         }
                     }, adConfig.getAdjustTokenTiktok());
