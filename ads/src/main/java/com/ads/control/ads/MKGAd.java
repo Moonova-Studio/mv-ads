@@ -1495,6 +1495,11 @@ public class MKGAd {
                                 callback.onAdClicked();
                             }
                         }
+
+                        @Override
+                        public void onInterstitialShow() {
+                            callback.onInterstitialShow();
+                        }
                     }, adConfig.getAdjustTokenTiktok());
                 } else {
                     Admob.getInstance().showRewardAds(activity, apRewardAd.getAdmobReward(), new RewardCallback() {
@@ -1521,6 +1526,11 @@ public class MKGAd {
                             if (callback != null) {
                                 callback.onAdClicked();
                             }
+                        }
+
+                        @Override
+                        public void onInterstitialShow() {
+                            callback.onInterstitialShow();
                         }
                     }, adConfig.getAdjustTokenTiktok());
                 }
