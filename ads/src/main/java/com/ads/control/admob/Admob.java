@@ -1335,7 +1335,6 @@ public class Admob {
                     dialog = new PrepareLoadingAdsDialog(context);
                     dialog.setCancelable(false);
                     try {
-                        callback.onInterstitialShow();
                         dialog.show();
                         AppOpenManager.getInstance().setInterstitialShowing(true);
                     } catch (Exception e) {
